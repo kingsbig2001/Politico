@@ -1,23 +1,32 @@
 import HelperUtils from '../utility/helperUltis';
 import partiesDb from '../models/partyModels';
-
+import OfficesDb from '../models/officeModels';
 
 /**
- * @class ValidateParties
+ * @class Validator
  * @description Intercepts and validates a given request for parties endpoints
- * @exports ValidateParties
+ * @exports Validator
  */
 
-class ValidateParties {
+class Validator {
   /**
          * @description Get a specific party by id
          * @param {object} req - The request object
          * @param {object} res - The response object
          * @param {function} next - Calls the next function
          * @returns {object} JSON representing the failure message
-         * @memberof ValidateParties
-         */
-  static findPartiesById(req, res, next) {
+         * @memberof Validator
+  */
+  static findById(req, res, next) {
+    let modelPath = '';
+    const checker = () => {
+      const urlPoint = req.url.split('/')[1];
+      if (urlPoint === 'parties') {
+        modelPath = 'Party';
+      } else {
+        modelPath = 'office';
+      }
+    };
     const { id } = req.params;
     if (!Number(id)) {
       return res.status(400).json({
@@ -25,14 +34,15 @@ class ValidateParties {
         error: 'Such endpoint does not exist',
       });
     }
-    const foundParties = partiesDb.find(party => party.id === Number(id));
-    if (!foundParties) {
+    const foundRecord = (partiesDb || OfficesDb).find(records => records.id === Number(id));
+    if (!foundRecord) {
+      checker();
       return res.status(404).json({
         status: 404,
-        error: 'Party Id does not exist',
+        error: `${modelPath} Id does not exist`,
       });
     }
-    req.body.foundParties = foundParties;
+    req.body.foundRecord = foundRecord;
     return next();
   }
 
@@ -44,18 +54,30 @@ class ValidateParties {
       * @returns {object} JSON API Response
       */
   static validateName(req, res, next) {
+    let modelPath = '';
+    const checker = () => {
+      const urlPoint = req.url.split('/')[1];
+      if (urlPoint === 'parties') {
+        modelPath = 'Party';
+      } else {
+        modelPath = 'office';
+      }
+    };
     const validate = HelperUtils.validate();
     let error = '';
     const { name } = req.body;
     if (!validate.name.test(name)) {
-      error = 'Party name must be valid';
+      checker();
+      error = `${modelPath} name must be valid`;
     }
     if (!name || name === undefined) {
-      error = 'Party name must be specified';
+      checker();
+      error = `${modelPath} name must be specified`;
     }
-    const duplicatName = partiesDb.find(party => party.name === name);
+    const duplicatName = (partiesDb || OfficesDb).find(records => records.name === name);
     if (duplicatName) {
-      error = 'Party name already exist';
+      checker();
+      error = `${modelPath} name already exist`;
     }
     if (error) {
       return res.status(400).json({
@@ -116,6 +138,31 @@ class ValidateParties {
 
     return next();
   }
+
+  /**
+    * @method validateOfficeType
+    * @description Validates Office type passed in the request body
+    * @param {object} req - The Request Object
+    * @param {object} res - The Response Object
+    * @returns {object} JSON API Response
+    */
+  static validateOfficeType(req, res, next) {
+    const validate = HelperUtils.validate();
+    let error = '';
+    const { type } = req.body;
+    if (!validate.type.test(type)) {
+      error = 'Invalid office type';
+    }
+    if (!type || type === undefined) {
+      error = 'Type must be specified';
+    }
+    if (error) {
+      return res.status(400).json({
+        status: 400, error,
+      });
+    }
+    return next();
+  }
 }
 
-export default ValidateParties;
+export default Validator;

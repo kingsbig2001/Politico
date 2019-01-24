@@ -1,8 +1,7 @@
 import express from 'express';
 import PartiesController from '../controllers/partyControllers';
-import ValidateParties from '../middlewares/validateParties';
+import Validator from '../middlewares/Validator';
 import OfficesController from '../controllers/officeControllers';
-import ValidateOffices from '../middlewares/validateOffices';
 
 const router = express.Router();
 
@@ -12,20 +11,20 @@ router.get('/', (req, res) => {
 });
 
 // Handle all Post request
-router.post('/parties', ValidateParties.validateHqAddress, ValidateParties.validateLogoUrl, ValidateParties.validateName, PartiesController.createParties);
-router.post('/offices', ValidateOffices.validateName, ValidateOffices.validateOfficeType,
+router.post('/parties', Validator.validateHqAddress, Validator.validateLogoUrl, Validator.validateName, PartiesController.createParties);
+router.post('/offices', Validator.validateName, Validator.validateOfficeType,
   OfficesController.createOffice);
 
 //  Handle all Get request
 router.get('/parties', PartiesController.getAllParties);
-router.get('/parties/:id', ValidateParties.findPartiesById, PartiesController.getPartyById);
+router.get('/parties/:id', Validator.findById, PartiesController.getPartyById);
 router.get('/offices', OfficesController.getAllOffices);
-router.get('/offices/:id', ValidateOffices.findOfficesById, OfficesController.getOfficeById);
+router.get('/offices/:id', Validator.findById, OfficesController.getOfficeById);
 
 //  Handle all Patch request
-router.patch('/parties/:id/name', ValidateParties.validateName, PartiesController.updateName);
+router.patch('/parties/:id/name', Validator.validateName, PartiesController.updateName);
 
 //  Handles all delete request
-router.delete('/parties/:id', ValidateParties.findPartiesById, PartiesController.deletePartyById);
-router.delete('/offices/:id', ValidateOffices.findOfficesById, OfficesController.deleteOfficeById);
+router.delete('/parties/:id', Validator.findById, PartiesController.deletePartyById);
+router.delete('/offices/:id', Validator.findById, OfficesController.deleteOfficeById);
 export default router;
