@@ -79,12 +79,12 @@ class PartiesController {
    * @memberof getPartyById
    */
   static updateName(req, res) {
-    const partyRecord = partiesDb.filter(partyObj => partyObj.id === Number(req.params.id));
-    const { name } = req.body;
     const id = Number(req.params.id);
-
-    Object.assign({}, partyRecord[0], { name: `${name}` });
-
+    const { name } = req.body;
+    const partyToUpdate = partiesDb.find(partyObj => partyObj.id === id);
+    const partyIndex = partiesDb.indexOf(partyToUpdate);
+    partyToUpdate.name = name;
+    partiesDb[partyIndex] = partyToUpdate;
     res.status(200).json({
       status: 200,
       data: [{ id, name }],
