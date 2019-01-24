@@ -116,31 +116,6 @@ class ValidateParties {
 
     return next();
   }
-
-  /**
-    * @method validateOfficeType
-    * @description Validates Office type passed in the request body
-    * @param {object} req - The Request Object
-    * @param {object} res - The Response Object
-    * @returns {object} JSON API Response
-    */
-  static validateOfficeType(req, res, next) {
-    const validate = HelperUtils.validate();
-    let error = '';
-    const { type } = req.body;
-    if (!validate.type.test(type)) {
-      error = 'Invalid office type';
-    }
-    if (!type || type === undefined) {
-      error = 'Type must be specified';
-    }
-    if (error) {
-      return res.status(400).json({
-        status: 400, error,
-      });
-    }
-    return next();
-  }
 }
 
 export default ValidateParties;
