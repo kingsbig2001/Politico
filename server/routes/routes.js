@@ -5,6 +5,11 @@ import OfficesController from '../controllers/officeControllers';
 
 const router = express.Router();
 
+// Handle requests on the /api/v1 endpoint
+router.get('/', (req, res) => {
+  res.status(200).json({ message: 'Welcome to Politico API v1' });
+});
+
 // Handle all Post request
 router.post('/parties', ValidateParties.validateHqAddress, ValidateParties.validateLogoUrl, ValidateParties.validateName, PartiesController.createParties);
 router.post('/offices', ValidateParties.validateName, ValidateParties.validateOfficeType,

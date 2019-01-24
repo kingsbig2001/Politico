@@ -47,12 +47,15 @@ class ValidateParties {
     const validate = HelperUtils.validate();
     let error = '';
     const { name } = req.body;
-
     if (!validate.name.test(name)) {
-      error = 'Part name must be valid';
+      error = 'Party name must be valid';
     }
     if (!name || name === undefined) {
       error = 'Party name must be specified';
+    }
+    const duplicatName = partiesDb.find(party => party.name === name);
+    if (duplicatName) {
+      error = 'Party name already exist';
     }
     if (error) {
       return res.status(400).json({
@@ -79,7 +82,7 @@ class ValidateParties {
     if (!validate.hqAddress.test(hqAddress)) {
       error = 'Invalid hqAddress format';
     } else if (!hqAddress || hqAddress === undefined) {
-      error = 'hdAddress must be specified';
+      error = 'hqAddress must be specified';
     }
     if (error) {
       return res.status(400).json({ status: 400, error });
@@ -103,7 +106,7 @@ class ValidateParties {
       error = 'Invalid party logo';
     }
     if (!logoUrl || logoUrl === undefined) {
-      error = 'Party  must be specified';
+      error = 'Party Logo must be specified';
     }
     if (error) {
       return res.status(400).json({

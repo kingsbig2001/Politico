@@ -14,14 +14,14 @@ class PartiesController {
        */
   static createParties(req, res) {
     const {
-      name, hdAddress, logoUrl,
+      name, hqAddress, logoUrl,
     } = req.body;
     const id = partiesDb[partiesDb.length - 1].id + 1;
     const registerdAt = new Date();
     const newParty = {
       id,
       name,
-      hdAddress,
+      hqAddress,
       logoUrl,
       registerdAt,
     };
@@ -100,8 +100,12 @@ class PartiesController {
    */
   static deletePartyById(req, res) {
     const id = Number(req.params.id);
-    // Use filter so as not to mutate array
-    partiesDb.filter(partyObj => partyObj.id !== Number(id));
+    // Use find to get object to delete
+    const partyToDelete = partiesDb.find(party => party.id === id);
+    // Get the index of the object to delete
+    const objId = partiesDb.indexOf(partyToDelete);
+    // Using the object index, splice the object out of the partiesDb
+    partiesDb.splice(objId, 1);
     res.status(200).json({
       status: 200,
       data: [{

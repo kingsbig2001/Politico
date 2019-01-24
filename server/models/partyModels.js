@@ -2,7 +2,7 @@ const partiesDb = [
   {
     id: 1,
     name: 'Advanced Congress of Democrats (ACD)',
-    hqAddress: 'plot 5 Wuse Abuja, Nigeria',
+    hqAddress: 'plot 5 Wuse Abuja Nigeria',
     logoUrl: 'advanced.png',
     registeredAt: '21-02-1989',
     updatedAt: '01-04-1996',
