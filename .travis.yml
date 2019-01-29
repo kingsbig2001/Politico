@@ -13,5 +13,5 @@ cache:
     - "node_modules"  
 after_success:
   - npm run coverage
-  - npm run report-coverage
+  - npm run showcoverage
   - npm run coveralls
